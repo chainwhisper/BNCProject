@@ -1,12 +1,12 @@
 package cmd
+
 import (
 	"fmt"
-	"os"
-
 	"github.com/huangsuyu/BNCProject/api"
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
+	"path/filepath"
 )
 
 var (
@@ -17,19 +17,19 @@ var (
 	server *api.Server
 
 	// Version for the application. Set via ldflags
-	Version = "undefined"
+	Version = "1.0"
 
-	// Commit (git) for the application. Set via ldflags
-	Commit = "undefined"
-
-	// Branch (git) for the application. Set via ldflags
-	Branch = "undefined"
+	//// Commit (git) for the application. Set via ldflags
+	//Commit = "undefined"
+	//
+	//// Branch (git) for the application. Set via ldflags
+	//Branch = "undefined"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "amino-micro",
-	Short: "A microservice for encoding JSON to amino",
+	Use:   "bnc-micro",
+	Short: "A microservice for querying data from ",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -50,20 +50,27 @@ func init() {
 func initConfig() {
 	server = &api.Server{
 		Version: Version,
-		Commit:  Commit,
-		Branch:  Branch,
+		//Commit:  Commit,
+		//Branch:  Branch,
 	}
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
 	} else {
-		home, err := homedir.Dir()
+		//home, err := homedir.Dir()
+		ex, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		exPath := filepath.Dir(ex)
+		fmt.Println(exPath)
+
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".amino-micro")
+		viper.AddConfigPath(exPath)
+		viper.SetConfigName("decode-micro")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
